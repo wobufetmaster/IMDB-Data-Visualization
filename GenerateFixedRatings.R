@@ -13,8 +13,7 @@ almost <- almost[almost != ""]
 amount <- almost[seq(1,814248,by = 2)]
 score <- almost[seq(2,814248,by = 2)]
 ratings <- cbind.data.frame(name,distribution,score,amount)
-ratings <- ratings[-grep("(VG)",ratings$name),]
-ratings <- ratings[-grep("(V)",ratings$name),]
-ratings <- ratings[-grep("(TV)",ratings$name),]
-
+ratings <- ratings[-grep("\\(VG\\)",ratings$name),]
+ratings <- ratings[-grep("\\(V\\)",ratings$name),]
+ratings <- ratings[-grep("\\(TV\\)",ratings$name),]
 write.csv(ratings,file = "Fixedratings.txt",quote = FALSE)
