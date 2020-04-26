@@ -28,6 +28,26 @@ library(shiny)
 
 test_string <- c("Test")
 
+
+Cert<- read.csv("FixedCertificates.txt", sep = ",", header=FALSE, stringsAsFactors=FALSE)
+Genre<- read.csv("FixedGenres.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+FK1<- read.csv("FixedKeyWord1.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+FK2<- read.csv("FixedKeyWord2.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+MovieNames<- read.csv("FixedMovies.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+Rating<- read.csv("Fixedratings.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
+Release<- read.csv("FixedRelease.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
+RunTime<- read.csv("FixedRunningTimes.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
+KeyList<- read.csv("ListofKeywords.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+
+
+#Release date alter
+X<-sub("USA:","",Release$Date)
+Y<-dmy(X)
+Release$Date<-Y
+###
+
+
+
 #side bar
 sidebar <- dashboardSidebar(
     disable = FALSE,
