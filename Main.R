@@ -27,12 +27,19 @@ library(shiny)
 
 
 
+<<<<<<< HEAD
 test_string <- c("Test")
 
 MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
 MasterList$Date<-sub("USA:Approved",NA,MasterList$Date)
 MasterList$Date<-sub("USA:Passed",NA,MasterList$Date)
+=======
+
+MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
+>>>>>>> 941d65aea43f81072461d0065e358e5275b0677a
 #Release date alter
+MasterList$Date <- as_date(MasterList$Date)
+
 
 ###
 #Generates a unique list of years from all the options.
@@ -131,41 +138,42 @@ body <- dashboardBody(tabItems(
                  tabBox(width = 4,height = 275, id = "tabset1",
                      title = "Movies released by year",
                      side= "right",
-                     tabPanel("Tab2", p("Graph")),
-                     tabPanel("Tab1", p("Tabular"))
+                     tabPanel("Graphical", plotOutput("YearGraph")),
+                     tabPanel("Tabular", p("Tabular"))
                  ),
                  tabBox(width = 4,height = 275, id = "tabset2",
                         title = "Movies released by month",
                         side= "right",
-                        tabPanel("Tab2", p("Graph")),
-                        tabPanel("Tab1", p("Tabular"))
+                        tabPanel("Graphical", plotOutput("MonthGraph")),
+                        tabPanel("Tabular", p("Tabular"))
                  ),
                  tabBox(width = 4,height = 275, id = "tabset3",
                         title = "Distribution of running times",
                         side= "right",
-                        tabPanel("Tab2", p("Graph")),
-                        tabPanel("Tab1", p("Tabular"))
+                        tabPanel("Graphical", p("RunningGraph")),
+                        tabPanel("Tabular", p("Tabular"))
                  )
              ),
+             fluidRow(),
              fluidRow(
-                 #chronologically, or alphabetically, or by max wind speed, or minimum pressure.
+                 
                  tabBox(width = 4,height = 275, id = "tabset4",
                         title = "distribution of certificates",
                         side= "right",
-                        tabPanel("Tab2", p("Graph")),
-                        tabPanel("Tab1", p("Tabular"))
+                        tabPanel("Graphical", p("CertificateGraph")),
+                        tabPanel("Tabular", p("Tabular"))
                  ),
                  tabBox(width = 4,height = 275, id = "tabset5",
                         title = "distribution of genres",
                         side= "right",
-                        tabPanel("Tab2", p("Graph")),
-                        tabPanel("Tab1", p("Tabular"))
+                        tabPanel("Graphical", p("GenreGraph")),
+                        tabPanel("Tabular", p("Tabular"))
                  ),
                  tabBox(width = 4,height = 275, id = "tabset5",
                         title = "top n keywords",
                         side= "right",
-                        tabPanel("Tab2", p("Graph")),
-                        tabPanel("Tab1", p("Tabular"))
+                        tabPanel("Graphical", p("KeywordGraph")),
+                        tabPanel("Tabular", p("Tabular"))
                  )
              )),
     tabItem(tabName = "about",
@@ -191,6 +199,7 @@ ui <- dashboardPage(skin = "red",
 # Define server logic required to draw a histogram
 server <- function(input,output,session) {
     theme_set(theme_grey(base_size = 18))
+<<<<<<< HEAD
     
     observe({
         inYear<- input$Year
@@ -208,6 +217,15 @@ server <- function(input,output,session) {
         updateSelectInput(session,"Keywords",choices=c("ALL",NewList),selected = inKey)
         
     })
+=======
+    output$YearGraph <- renderPlot({
+        plot(table(year(MasterList$Date)))
+    },height = 200,width = 350)
+    output$MonthGraph <- renderPlot({
+        
+        plot(table(month(MasterList$Date,abbr = TRUE)))
+    },height = 200,width = 350)    
+>>>>>>> 941d65aea43f81072461d0065e358e5275b0677a
 }
 
 # Run the application 
