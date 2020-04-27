@@ -17,6 +17,7 @@ library(grid)
 library(leaflet)
 library(scales)
 library(stringr)
+library(dplyr)
 #library(rgdal)
 #library(randomcoloR)
 library(DT)
@@ -29,21 +30,21 @@ library(shiny)
 test_string <- c("Test")
 
 
-Cert<- read.csv("FixedCertificates.txt", sep = ",", header=FALSE, stringsAsFactors=FALSE)
+Cert<- read.csv("FixedCertificates.txt", sep = ",", header=TRUE, stringsAsFactors=FALSE)
 Genre<- read.csv("FixedGenres.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
-FK1<- read.csv("FixedKeyWords.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+FK1<- read.csv("FixedKeyWords.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
 
 MovieNames<- read.csv("FixedMovies.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
 Rating<- read.csv("Fixedratings.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
 Release<- read.csv("FixedRelease.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
 RunTime<- read.csv("FixedRunningTimes.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
 KeyList<- read.csv("ListofKeywords.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
 
-
+MasterList$Date<-sub("USA:Approved",NA,MasterList$Date)
+MasterList$Date<-sub("USA:Passed",NA,MasterList$Date)
 #Release date alter
-X<-sub("USA:","",Release$Date)
-Y<-dmy(X)
-Release$Date<-Y
+
 ###
 #Generates a unique list of years from all the options.
 GetYearList<- function(Data){
@@ -57,6 +58,14 @@ GetYearList<- function(Data){
     
 }
 
+keywordslist<-inner_join(Cert,FK1,by="Name")
+keywordslist<-table(keywordslist$keyword)
+keywordslist<-data.frame(keywordslist)
+colnames(keywordslist)[1]<-"keyword"
+colnames(keywordslist)[2]<-"count"
+keywordslist<-keywordslist[order(keywordslist$count),]
+keywordslist<-tail(keywordslist$keyword,100)
+
 GetGenreList<- c("Documentary","Fantasy","Mystery","Thriller", "Comedy", "Drama", "Horror", "Action", "Crime","Sci-Fi","Music","Musical", "Biography", "History","Animation"
                  ,"Adventure","War","Romance","Western","Sport","Family","Sci-fi","Film-Noir")
 
@@ -67,9 +76,9 @@ sidebar <- dashboardSidebar(
     collapsed = TRUE,
     
     selectInput("Decade", "Choose the decade", test_string, selected = "Test"),
-    selectInput("Year", "Choose the year", c("ALL",GetYearList(Release)), selected = "ALL"),
+    selectInput("Year", "Choose the year", c("ALL",GetYearList(MasterList)), selected = "ALL"),
     selectInput("Genre", "Choose the genre", c("ALL",GetGenreList), selected = "ALL"),
-    selectInput("Keywords", "Selected words",test_string, selected = "Test"),
+    selectInput("Keywords", "Selected words",keywordslist, selected = "Test"),
 
     sidebarMenu(
         menuItem(
