@@ -30,9 +30,9 @@ test_string <- c("Test")
 
 
 Cert<- read.csv("FixedCertificates.txt", sep = ",", header=FALSE, stringsAsFactors=FALSE)
-Genre<- read.csv("FixedGenres.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
-FK1<- read.csv("FixedKeyWord1.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
-FK2<- read.csv("FixedKeyWord2.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+Genre<- read.csv("FixedGenres.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
+FK1<- read.csv("FixedKeyWords.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
+
 MovieNames<- read.csv("FixedMovies.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
 Rating<- read.csv("Fixedratings.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
 Release<- read.csv("FixedRelease.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
@@ -45,7 +45,20 @@ X<-sub("USA:","",Release$Date)
 Y<-dmy(X)
 Release$Date<-Y
 ###
+#Generates a unique list of years from all the options.
+GetYearList<- function(Data){
+    Y<-Data$Date
+    Y<-lubridate::year(Y)
+    Y<-data.frame(Y)
+    Y<-unique(Y)
+    Y<-Y[order(Y$Y),]
+    Y<-as.list(t(Y))
+    Y
+    
+}
 
+GetGenreList<- c("Documentary","Fantasy","Mystery","Thriller", "Comedy", "Drama", "Horror", "Action", "Crime","Sci-Fi","Music","Musical", "Biography", "History","Animation"
+                 ,"Adventure","War","Romance","Western","Sport","Family","Sci-fi","Film-Noir")
 
 
 #side bar
@@ -54,8 +67,8 @@ sidebar <- dashboardSidebar(
     collapsed = TRUE,
     
     selectInput("Decade", "Choose the decade", test_string, selected = "Test"),
-    selectInput("Year", "Choose the year", test_string, selected = "Test"),
-    selectInput("Genre", "Choose the genre", test_string, selected = "Test"),
+    selectInput("Year", "Choose the year", c("ALL",GetYearList(Release)), selected = "ALL"),
+    selectInput("Genre", "Choose the genre", c("ALL",GetGenreList), selected = "ALL"),
     selectInput("Keywords", "Selected words",test_string, selected = "Test"),
 
     sidebarMenu(
