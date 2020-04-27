@@ -61,20 +61,24 @@ colnames(keywordslist)[1]<-"keyword"
 colnames(keywordslist)[2]<-"count"
 keywordslist<-keywordslist[order(keywordslist$count),]
 keywordslist<-tail(keywordslist$keyword,100)
-#keywordslist<-keywordslist[order(keywordslist$keyword),]
+keywordslist<-sort(keywordslist)
+keywordslist<-as.character(keywordslist)
+
+
 GetGenreList<- c("Documentary","Fantasy","Mystery","Thriller", "Comedy", "Drama", "Horror", "Action", "Crime","Sci-Fi","Music","Musical", "Biography", "History","Animation"
                  ,"Adventure","War","Romance","Western","Sport","Family","Sci-fi","Film-Noir")
 
+GetDecade<- c("1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")
 
 #side bar
 sidebar <- dashboardSidebar(
     disable = FALSE,
     collapsed = TRUE,
     
-    selectInput("Decade", "Choose the decade", test_string, selected = "Test"),
+    selectInput("Decade", "Choose the decade", c("ALL",GetDecade), selected = "Test"),
     selectInput("Year", "Choose the year", c("ALL",GetYearList(MasterList)), selected = "ALL"),
     selectInput("Genre", "Choose the genre", c("ALL",GetGenreList), selected = "ALL"),
-    selectInput("Keywords", "Selected words",keywordslist, selected = "Test"),
+    selectInput("Keywords", "Selected words",c("ALL",keywordslist), selected = "Test"),
 
     sidebarMenu(
         menuItem(
