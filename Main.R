@@ -1,3 +1,4 @@
+
 #
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
@@ -58,15 +59,18 @@ GetDecade<- c("1910","1920","1930","1940","1950","1960","1970","1980","1990","20
 getTable<-function(Dec,Yr,Gen,Key){
     
     
-    if(Yr!= "ALL"){
-        NewDat<-MasterList[which(year(MasterList$Date)== Yr),]
-    }else{
-        NewDat<-MasterList
+    if(Dec != "ALL"){
+        Dec<-as.numeric(Dec)
     }
     
-    if(Yr=="ALL" && Dec!="ALL"){
+    NewDat<-MasterList
+    
+    if(Yr!= "ALL"){
+        NewDat<-MasterList[which(year(MasterList$Date)== Yr),]
+    }
+    
+    if(Yr == "ALL" && Dec != "ALL"){
         NewDat<-NewDat[which((year(NewDat$Date)%/%10)==(Dec%/%10)),]
-        
     }
     
     if(Gen!="ALL"){
@@ -125,7 +129,11 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(tabItems(
     tabItem (tabName = "dashboard",
              fluidRow(
+<<<<<<< HEAD
                  tabBox(width = 6,height = 450, id = "tabset1",
+=======
+                 tabBox(width = 4,height = 275, id = "tabset1",
+>>>>>>> 0487f47b7f5c3ef0cbe3a4179f69d1d19b59a786
                         title = "Movies released by year",
                         side= "right",
                         tabPanel("Graphical", plotOutput("YearGraph")),
@@ -188,6 +196,26 @@ ui <- dashboardPage(skin = "red",
 # Define server logic required to draw a histogram
 server <- function(input,output,session) {
     theme_set(theme_grey(base_size = 18))
+    
+    observe({
+        inYear<- input$Year
+        inDecade<- input$Decade
+        inGenre<- input$Genre
+        inKey<- input$Keywords
+        
+        NewList<-getKeyList("ALL","ALL","ALL","ALL")
+        
+        if(inYear!="ALL"|| inDecade != "ALL" || inGenre!="ALL"){
+            NewList <- getKeyList(inDecade,inYear,inGenre,inKey)
+        }
+        
+        
+        updateSelectInput(session,"Keywords",choices=c("ALL",NewList),selected = inKey)
+        
+    })
+    
+    
+    
     output$YearGraph <- renderPlot({
         plot(table(year(MasterList$Date)))
     },height = 400,width = 500)
