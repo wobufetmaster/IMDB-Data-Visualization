@@ -130,9 +130,9 @@ body <- dashboardBody(tabItems(
     tabItem (tabName = "dashboard",
              fluidRow(
 
-                 tabBox(width = 6,height = 450, id = "tabset1",
+                 #tabBox(width = 6,height = 450, id = "tabset1",
 
-                 tabBox(width = 4,height = 275, id = "tabset1",
+                 tabBox(width = 6,height = 450, id = "tabset1",
 
                         title = "Movies released by year",
                         side= "right",
@@ -184,7 +184,7 @@ body <- dashboardBody(tabItems(
             h3("Data Source:"),
             h4(" IMDB from December 2017: ftp://ftp.fu-berlin.de/pub/misc/movies/database/frozendata/ "),
     )
-)  ))
+)  )
 
 
 ui <- dashboardPage(skin = "red",
@@ -217,9 +217,10 @@ server <- function(input,output,session) {
     
     
     output$YearGraph <- renderPlot({
-        #ggplot(as.data.frame(table(year(MasterList$Date)))) + ae
-        
-    },height = 400,width = 500)
+        ggplot(as.data.frame(table(year(MasterList$Date)))) + aes(x = Var1,y = Freq) + 
+            geom_bar(stat="identity",fill = "blue2") +
+            scale_x_discrete(name ="Year", limits=seq(from = 1930, to = 2018, by = 5))
+            },height = 400,width = 500)
     output$MonthGraph <- renderPlot({
         
         plot(table(month(MasterList$Date,abbr = TRUE)))
