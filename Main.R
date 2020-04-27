@@ -1,3 +1,4 @@
+
 #
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
@@ -27,16 +28,8 @@ library(shiny)
 
 
 
-<<<<<<< HEAD
-test_string <- c("Test")
 
 MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
-MasterList$Date<-sub("USA:Approved",NA,MasterList$Date)
-MasterList$Date<-sub("USA:Passed",NA,MasterList$Date)
-=======
-
-MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
->>>>>>> 941d65aea43f81072461d0065e358e5275b0677a
 #Release date alter
 MasterList$Date <- as_date(MasterList$Date)
 
@@ -65,18 +58,16 @@ GetDecade<- c("1910","1920","1930","1940","1950","1960","1970","1980","1990","20
 #####Primary Table reducer
 getTable<-function(Dec,Yr,Gen,Key){
     
-    if(Dec != "ALL"){
-        Dec<-as.numeric(Dec)
-    }
-    
-    NewDat<-MasterList
     
     if(Yr!= "ALL"){
         NewDat<-MasterList[which(year(MasterList$Date)== Yr),]
+    }else{
+        NewDat<-MasterList
     }
     
-    if(Yr == "ALL" && Dec != "ALL"){
+    if(Yr=="ALL" && Dec!="ALL"){
         NewDat<-NewDat[which((year(NewDat$Date)%/%10)==(Dec%/%10)),]
+        
     }
     
     if(Gen!="ALL"){
@@ -97,7 +88,7 @@ getTable<-function(Dec,Yr,Gen,Key){
 ##End of table reducer
 ###################
 getKeyList<-function(Dec,Yr,Gen,Key){
-    X<-getTable(Dec,Yr,Gen,"ALL")
+    X<-getTable(Dec,Yr,Gen,Key)
     X<-X$Keyword
     #X<-data.frame(X)
     R<-  tail(sort(table(unlist(strsplit(as.character(X), " ")))), 10)
@@ -115,7 +106,7 @@ sidebar <- dashboardSidebar(
     selectInput("Year", "Choose the year", c("ALL",GetYearList(MasterList)), selected = "ALL"),
     selectInput("Genre", "Choose the genre", c("ALL",GetGenreList), selected = "ALL"),
     selectInput("Keywords", "Selected words",c("ALL",getKeyList("ALL","ALL","ALL","ALL")), selected = "Test"),
-
+    
     sidebarMenu(
         menuItem(
             "Dashboard",
@@ -136,10 +127,10 @@ body <- dashboardBody(tabItems(
     tabItem (tabName = "dashboard",
              fluidRow(
                  tabBox(width = 4,height = 275, id = "tabset1",
-                     title = "Movies released by year",
-                     side= "right",
-                     tabPanel("Graphical", plotOutput("YearGraph")),
-                     tabPanel("Tabular", p("Tabular"))
+                        title = "Movies released by year",
+                        side= "right",
+                        tabPanel("Graphical", plotOutput("YearGraph")),
+                        tabPanel("Tabular", p("Tabular"))
                  ),
                  tabBox(width = 4,height = 275, id = "tabset2",
                         title = "Movies released by month",
@@ -191,33 +182,14 @@ body <- dashboardBody(tabItems(
 
 
 ui <- dashboardPage(skin = "red",
-                dashboardHeader(title = "Movie Night", titleWidth = 200),
-                sidebar,
-                body
+                    dashboardHeader(title = "Movie Night", titleWidth = 200),
+                    sidebar,
+                    body
 )
 
 # Define server logic required to draw a histogram
 server <- function(input,output,session) {
     theme_set(theme_grey(base_size = 18))
-<<<<<<< HEAD
-    
-    observe({
-        inYear<- input$Year
-        inDecade<- input$Decade
-        inGenre<- input$Genre
-        inKey<- input$Keywords
-        
-        NewList<-getKeyList("ALL","ALL","ALL","ALL")
-        
-        if(inYear!="ALL"|| inDecade != "ALL" || inGenre!="ALL"){
-            NewList <- getKeyList(inDecade,inYear,inGenre,inKey)
-        }
-            
-        
-        updateSelectInput(session,"Keywords",choices=c("ALL",NewList),selected = inKey)
-        
-    })
-=======
     output$YearGraph <- renderPlot({
         plot(table(year(MasterList$Date)))
     },height = 200,width = 350)
@@ -225,7 +197,6 @@ server <- function(input,output,session) {
         
         plot(table(month(MasterList$Date,abbr = TRUE)))
     },height = 200,width = 350)    
->>>>>>> 941d65aea43f81072461d0065e358e5275b0677a
 }
 
 # Run the application 
