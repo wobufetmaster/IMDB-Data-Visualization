@@ -34,13 +34,9 @@ Cert<- read.csv("FixedCertificates.txt", sep = ",", header=TRUE, stringsAsFactor
 Genre<- read.csv("FixedGenres.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
 FK1<- read.csv("FixedKeyWords.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
 
-MovieNames<- read.csv("FixedMovies.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
-Rating<- read.csv("Fixedratings.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
-Release<- read.csv("FixedRelease.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
-RunTime<- read.csv("FixedRunningTimes.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
-KeyList<- read.csv("ListofKeywords.txt", sep=",", header=FALSE,stringsAsFactors=FALSE)
-MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
 
+MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
+Merged<- read.csv("MergedFiles.txt", sep=",", header= TRUE,stringsAsFactors=FALSE)
 MasterList$Date<-sub("USA:Approved",NA,MasterList$Date)
 MasterList$Date<-sub("USA:Passed",NA,MasterList$Date)
 #Release date alter
@@ -65,7 +61,7 @@ colnames(keywordslist)[1]<-"keyword"
 colnames(keywordslist)[2]<-"count"
 keywordslist<-keywordslist[order(keywordslist$count),]
 keywordslist<-tail(keywordslist$keyword,100)
-
+#keywordslist<-keywordslist[order(keywordslist$keyword),]
 GetGenreList<- c("Documentary","Fantasy","Mystery","Thriller", "Comedy", "Drama", "Horror", "Action", "Crime","Sci-Fi","Music","Musical", "Biography", "History","Animation"
                  ,"Adventure","War","Romance","Western","Sport","Family","Sci-fi","Film-Noir")
 

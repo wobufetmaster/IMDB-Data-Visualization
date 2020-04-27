@@ -1,4 +1,4 @@
-name,certificate,distribution,score,amount,Date,Extra,duration
+Name,certificate,distribution,score,amount,Date,Extra,duration
 10 Cent Pistol (2014),USA:R,1001210000,4.7,391,USA:24-July-2015,,91
 10 Cent Pistol (2014),USA:R,1001210000,4.7,391,USA:25-April-2014,(NewportBeachInternationalFilmFestival),91
 10 Years (2011),USA:PG-13,0000122100,6.1,20790,USA:5-October-2012,,100
