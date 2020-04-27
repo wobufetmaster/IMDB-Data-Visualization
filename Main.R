@@ -29,14 +29,7 @@ library(shiny)
 
 test_string <- c("Test")
 
-
-Cert<- read.csv("FixedCertificates.txt", sep = ",", header=TRUE, stringsAsFactors=FALSE)
-Genre<- read.csv("FixedGenres.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
-FK1<- read.csv("FixedKeyWords.txt", sep=",", header=TRUE,stringsAsFactors=FALSE)
-
-
 MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
-Merged<- read.csv("MergedFiles.txt", sep=",", header= TRUE,stringsAsFactors=FALSE)
 MasterList$Date<-sub("USA:Approved",NA,MasterList$Date)
 MasterList$Date<-sub("USA:Passed",NA,MasterList$Date)
 #Release date alter
@@ -65,16 +58,18 @@ GetDecade<- c("1910","1920","1930","1940","1950","1960","1970","1980","1990","20
 #####Primary Table reducer
 getTable<-function(Dec,Yr,Gen,Key){
     
+    if(Dec != "ALL"){
+        Dec<-as.numeric(Dec)
+    }
+    
+    NewDat<-MasterList
     
     if(Yr!= "ALL"){
         NewDat<-MasterList[which(year(MasterList$Date)== Yr),]
-    }else{
-        NewDat<-MasterList
     }
     
-    if(Yr=="ALL" && Dec!="ALL"){
+    if(Yr == "ALL" && Dec != "ALL"){
         NewDat<-NewDat[which((year(NewDat$Date)%/%10)==(Dec%/%10)),]
-        
     }
     
     if(Gen!="ALL"){
@@ -95,7 +90,7 @@ getTable<-function(Dec,Yr,Gen,Key){
 ##End of table reducer
 ###################
 getKeyList<-function(Dec,Yr,Gen,Key){
-    X<-getTable(Dec,Yr,Gen,Key)
+    X<-getTable(Dec,Yr,Gen,"ALL")
     X<-X$Keyword
     #X<-data.frame(X)
     R<-  tail(sort(table(unlist(strsplit(as.character(X), " ")))), 10)
@@ -197,6 +192,22 @@ ui <- dashboardPage(skin = "red",
 server <- function(input,output,session) {
     theme_set(theme_grey(base_size = 18))
     
+    observe({
+        inYear<- input$Year
+        inDecade<- input$Decade
+        inGenre<- input$Genre
+        inKey<- input$Keywords
+        
+        NewList<-getKeyList("ALL","ALL","ALL","ALL")
+        
+        if(inYear!="ALL"|| inDecade != "ALL" || inGenre!="ALL"){
+            NewList <- getKeyList(inDecade,inYear,inGenre,inKey)
+        }
+            
+        
+        updateSelectInput(session,"Keywords",choices=c("ALL",NewList),selected = inKey)
+        
+    })
 }
 
 # Run the application 
