@@ -54,21 +54,55 @@ GetYearList<- function(Data){
     
 }
 
-keywordslist<-inner_join(Cert,FK1,by="Name")
-keywordslist<-table(keywordslist$keyword)
-keywordslist<-data.frame(keywordslist)
-colnames(keywordslist)[1]<-"keyword"
-colnames(keywordslist)[2]<-"count"
-keywordslist<-keywordslist[order(keywordslist$count),]
-keywordslist<-tail(keywordslist$keyword,100)
-keywordslist<-sort(keywordslist)
-keywordslist<-as.character(keywordslist)
+
 
 
 GetGenreList<- c("Documentary","Fantasy","Mystery","Thriller", "Comedy", "Drama", "Horror", "Action", "Crime","Sci-Fi","Music","Musical", "Biography", "History","Animation"
                  ,"Adventure","War","Romance","Western","Sport","Family","Sci-fi","Film-Noir")
 
 GetDecade<- c("1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")
+#########################
+#####Primary Table reducer
+getTable<-function(Dec,Yr,Gen,Key){
+    
+    
+    if(Yr!= "ALL"){
+        NewDat<-MasterList[which(year(MasterList$Date)== Yr),]
+    }else{
+        NewDat<-MasterList
+    }
+    
+    if(Yr=="ALL" && Dec!="ALL"){
+        NewDat<-NewDat[which((year(NewDat$Date)%/%10)==(Dec%/%10)),]
+        
+    }
+    
+    if(Gen!="ALL"){
+        C<-grep(Gen,NewDat$Genre)
+        C<-as.integer(C)
+        NewDat<-NewDat[C,]
+    }
+    
+    if(Key!="ALL"){
+        D<-grep(Key,NewDat$Keyword)
+        D<-as.integer(D)
+        NewDat<-NewDat[D,]
+    }
+    
+    NewDat
+    
+}
+##End of table reducer
+###################
+getKeyList<-function(Dec,Yr,Gen,Key){
+    X<-getTable(Dec,Yr,Gen,Key)
+    X<-X$Keyword
+    #X<-data.frame(X)
+    R<-  tail(sort(table(unlist(strsplit(as.character(X), " ")))), 10)
+    keywordslist<-data.frame(R)
+    keywordslist<-as.character(keywordslist$Var1)
+    keywordslist
+}
 
 #side bar
 sidebar <- dashboardSidebar(
@@ -78,7 +112,7 @@ sidebar <- dashboardSidebar(
     selectInput("Decade", "Choose the decade", c("ALL",GetDecade), selected = "Test"),
     selectInput("Year", "Choose the year", c("ALL",GetYearList(MasterList)), selected = "ALL"),
     selectInput("Genre", "Choose the genre", c("ALL",GetGenreList), selected = "ALL"),
-    selectInput("Keywords", "Selected words",c("ALL",keywordslist), selected = "Test"),
+    selectInput("Keywords", "Selected words",c("ALL",getKeyList("ALL","ALL","ALL","ALL")), selected = "Test"),
 
     sidebarMenu(
         menuItem(
