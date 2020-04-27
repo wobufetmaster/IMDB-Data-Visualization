@@ -54,15 +54,7 @@ GetYearList<- function(Data){
     
 }
 
-keywordslist<-inner_join(Cert,FK1,by="Name")
-keywordslist<-table(keywordslist$keyword)
-keywordslist<-data.frame(keywordslist)
-colnames(keywordslist)[1]<-"keyword"
-colnames(keywordslist)[2]<-"count"
-keywordslist<-keywordslist[order(keywordslist$count),]
-keywordslist<-tail(keywordslist$keyword,100)
-keywordslist<-sort(keywordslist)
-keywordslist<-as.character(keywordslist)
+
 
 
 GetGenreList<- c("Documentary","Fantasy","Mystery","Thriller", "Comedy", "Drama", "Horror", "Action", "Crime","Sci-Fi","Music","Musical", "Biography", "History","Animation"
@@ -102,8 +94,15 @@ getTable<-function(Dec,Yr,Gen,Key){
 }
 ##End of table reducer
 ###################
-
-
+getKeyList<-function(Dec,Yr,Gen,Key){
+    X<-getTable(Dec,Yr,Gen,Key)
+    X<-X$Keyword
+    #X<-data.frame(X)
+    R<-  tail(sort(table(unlist(strsplit(as.character(X), " ")))), 10)
+    keywordslist<-data.frame(R)
+    keywordslist<-as.character(keywordslist$Var1)
+    keywordslist
+}
 
 #side bar
 sidebar <- dashboardSidebar(
@@ -113,7 +112,7 @@ sidebar <- dashboardSidebar(
     selectInput("Decade", "Choose the decade", c("ALL",GetDecade), selected = "Test"),
     selectInput("Year", "Choose the year", c("ALL",GetYearList(MasterList)), selected = "ALL"),
     selectInput("Genre", "Choose the genre", c("ALL",GetGenreList), selected = "ALL"),
-    selectInput("Keywords", "Selected words",c("ALL",keywordslist), selected = "Test"),
+    selectInput("Keywords", "Selected words",c("ALL",getKeyList("ALL","ALL","ALL","ALL")), selected = "Test"),
 
     sidebarMenu(
         menuItem(
