@@ -140,7 +140,7 @@ body <- dashboardBody(tabItems(
                  tabBox(width = 4,height = 275, id = "tabset3",
                         title = "Distribution of running times",
                         side= "right",
-                        tabPanel("Graphical", p("RunningGraph")),
+                        tabPanel("Graphical", plotOutput("RunningGraph")),
                         tabPanel("Tabular", p("Tabular"))
                  )
              ),
@@ -150,13 +150,13 @@ body <- dashboardBody(tabItems(
                  tabBox(width = 4,height = 275, id = "tabset4",
                         title = "distribution of certificates",
                         side= "right",
-                        tabPanel("Graphical", p("CertificateGraph")),
+                        tabPanel("Graphical", plotOutput("CertificateGraph")),
                         tabPanel("Tabular", p("Tabular"))
                  ),
                  tabBox(width = 4,height = 275, id = "tabset5",
                         title = "distribution of genres",
                         side= "right",
-                        tabPanel("Graphical", p("GenreGraph")),
+                        tabPanel("Graphical", plotOutput("GenreGraph")),
                         tabPanel("Tabular", p("Tabular"))
                  ),
                  tabBox(width = 4,height = 275, id = "tabset5",
@@ -189,13 +189,31 @@ ui <- dashboardPage(skin = "red",
 # Define server logic required to draw a histogram
 server <- function(input,output,session) {
     theme_set(theme_grey(base_size = 18))
+    
     output$YearGraph <- renderPlot({
         plot(table(year(MasterList$Date)))
     },height = 200,width = 350)
+    
     output$MonthGraph <- renderPlot({
-        
         plot(table(month(MasterList$Date,abbr = TRUE)))
-    },height = 200,width = 350)    
+    },height = 200,width = 350)
+    
+    output$RunningGraph <- renderPlot({
+        plot(table(MasterList$duration))
+    },height = 200,width = 350)  
+    
+    output$GenreGraph <- renderPlot({
+        plot(table(MasterList$Genres))
+    },height = 200,width = 350)  
+    
+    output$CertificateGraph <- renderPlot({
+        plot(table(MasterList$Cert))
+    },height = 200,width = 350)  
+    
+    output$KeywordGraph <- renderPlot({
+        plot(table(MasterList$Keyword))
+    },height = 200,width = 350)  
+    
 }
 
 # Run the application 
