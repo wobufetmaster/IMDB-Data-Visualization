@@ -69,6 +69,41 @@ GetGenreList<- c("Documentary","Fantasy","Mystery","Thriller", "Comedy", "Drama"
                  ,"Adventure","War","Romance","Western","Sport","Family","Sci-fi","Film-Noir")
 
 GetDecade<- c("1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")
+#########################
+#####Primary Table reducer
+getTable<-function(Dec,Yr,Gen,Key){
+    
+    
+    if(Yr!= "ALL"){
+        NewDat<-MasterList[which(year(MasterList$Date)== Yr),]
+    }else{
+        NewDat<-MasterList
+    }
+    
+    if(Yr=="ALL" && Dec!="ALL"){
+        NewDat<-NewDat[which((year(NewDat$Date)%/%10)==(Dec%/%10)),]
+        
+    }
+    
+    if(Gen!="ALL"){
+        C<-grep(Gen,NewDat$Genre)
+        C<-as.integer(C)
+        NewDat<-NewDat[C,]
+    }
+    
+    if(Key!="ALL"){
+        D<-grep(Key,NewDat$Keyword)
+        D<-as.integer(D)
+        NewDat<-NewDat[D,]
+    }
+    
+    NewDat
+    
+}
+##End of table reducer
+###################
+
+
 
 #side bar
 sidebar <- dashboardSidebar(
