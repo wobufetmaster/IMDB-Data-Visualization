@@ -105,7 +105,7 @@ sidebar <- dashboardSidebar(
     selectInput("Year", "Choose the year", c("ALL",GetYearList(MasterList)), selected = "ALL"),
     selectInput("Genre", "Choose the genre", c("ALL",GetGenreList), selected = "ALL"),
     selectInput("Keywords", "Selected words",c("ALL",getKeyList("ALL","ALL","ALL","ALL")), selected = "Test"),
-
+    
     sidebarMenu(
         menuItem(
             "Dashboard",
@@ -125,44 +125,43 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(tabItems(
     tabItem (tabName = "dashboard",
              fluidRow(
-                 tabBox(width = 4,height = 275, id = "tabset1",
-                     title = "Movies released by year",
-                     side= "right",
-                     tabPanel("Graphical", plotOutput("YearGraph")),
-                     tabPanel("Tabular", p("Tabular"))
+                 tabBox(width = 6,height = 450, id = "tabset1",
+                        title = "Movies released by year",
+                        side= "right",
+                        tabPanel("Graphical", plotOutput("YearGraph")),
+                        tabPanel("Tabular", p("Tabular"))
                  ),
-                 tabBox(width = 4,height = 275, id = "tabset2",
+                 tabBox(width = 6,height = 450, id = "tabset2",
                         title = "Movies released by month",
                         side= "right",
                         tabPanel("Graphical", plotOutput("MonthGraph")),
                         tabPanel("Tabular", p("Tabular"))
-                 ),
-                 tabBox(width = 4,height = 275, id = "tabset3",
+                 )
+             ), fluidRow(
+                 tabBox(width = 6,height = 450, id = "tabset3",
                         title = "Distribution of running times",
                         side= "right",
                         tabPanel("Graphical", plotOutput("RunningGraph")),
                         tabPanel("Tabular", p("Tabular"))
-                 )
-             ),
-             fluidRow(),
-             fluidRow(
-                 
-                 tabBox(width = 4,height = 275, id = "tabset4",
+                 ),
+                 tabBox(width = 6,height = 450, id = "tabset4",
                         title = "distribution of certificates",
                         side= "right",
                         tabPanel("Graphical", plotOutput("CertificateGraph")),
                         tabPanel("Tabular", p("Tabular"))
                  ),
-                 tabBox(width = 4,height = 275, id = "tabset5",
+             ),
+             fluidRow(
+                 tabBox(width = 6,height = 450, id = "tabset5",
                         title = "distribution of genres",
                         side= "right",
                         tabPanel("Graphical", plotOutput("GenreGraph")),
                         tabPanel("Tabular", p("Tabular"))
                  ),
-                 tabBox(width = 4,height = 275, id = "tabset5",
+                 tabBox(width = 6,height = 450, id = "tabset5",
                         title = "top n keywords",
                         side= "right",
-                        tabPanel("Graphical", p("KeywordGraph")),
+                        tabPanel("Graphical", plotOutput("KeywordGraph")),
                         tabPanel("Tabular", p("Tabular"))
                  )
              )),
@@ -181,39 +180,42 @@ body <- dashboardBody(tabItems(
 
 
 ui <- dashboardPage(skin = "red",
-                dashboardHeader(title = "Movie Night", titleWidth = 200),
-                sidebar,
-                body
+                    dashboardHeader(title = "Movie Night", titleWidth = 200),
+                    sidebar,
+                    body
 )
 
 # Define server logic required to draw a histogram
 server <- function(input,output,session) {
     theme_set(theme_grey(base_size = 18))
-    
     output$YearGraph <- renderPlot({
         plot(table(year(MasterList$Date)))
-    },height = 200,width = 350)
-    
+    },height = 400,width = 500)
     output$MonthGraph <- renderPlot({
+        
         plot(table(month(MasterList$Date,abbr = TRUE)))
-    },height = 200,width = 350)
+    },height = 400,width = 500)
     
     output$RunningGraph <- renderPlot({
         plot(table(MasterList$duration))
-    },height = 200,width = 350)  
+    },height = 400,width = 500)  
     
     output$GenreGraph <- renderPlot({
         plot(table(MasterList$Genres))
-    },height = 200,width = 350)  
+    },height = 400,width = 500)  
     
     output$CertificateGraph <- renderPlot({
         plot(table(MasterList$Cert))
-    },height = 200,width = 350)  
+    },height = 400,width = 500)  
     
     output$KeywordGraph <- renderPlot({
         plot(table(MasterList$Keyword))
-    },height = 200,width = 350)  
+    },height = 400,width = 500)  
     
+    output$YearDT <- renderDT({
+        
+        
+    })
 }
 
 # Run the application 
