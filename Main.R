@@ -29,7 +29,7 @@ library(shiny)
 
 
 
-MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=TRUE)
+MasterList<- read.csv("Master.txt", sep =",",header=TRUE,stringsAsFactors=FALSE)
 #Release date alter
 MasterList$Date <- as_date(MasterList$Date)
 
@@ -222,24 +222,40 @@ server <- function(input,output,session) {
             scale_x_discrete(name ="Year", limits=seq(from = 1930, to = 2018, by = 5))
             },height = 400,width = 500)
     output$MonthGraph <- renderPlot({
-        
-        plot(table(month(MasterList$Date,abbr = TRUE)))
+        ggplot(as.data.frame(table(month(MasterList$Date)))) + aes(x = Var1,y = Freq) + 
+            geom_bar(stat="identity",fill = "red2") +
+            scale_x_discrete(name ="Month", limits=1:12)
     },height = 400,width = 500)
     
     output$RunningGraph <- renderPlot({
-        plot(table(MasterList$duration))
+        ggplot(as.data.frame(table(MasterList$duration))) + aes(x = Var1,y = Freq) + 
+            geom_bar(stat="identity",fill = "green") +
+            scale_x_discrete(name ="Running Time",limits = seq(from = 60, to = 180, by = 5))
     },height = 400,width = 500)  
     
     output$GenreGraph <- renderPlot({
-        plot(table(MasterList$Genres))
+        ggplot(as.data.frame(table(unlist(strsplit(MasterList$Genres," "))))) + aes(x = Var1,y = Freq) + 
+            geom_bar(stat="identity",fill = "blue") +
+            scale_x_discrete(name ="Genre")
+        
     },height = 400,width = 500)  
     
     output$CertificateGraph <- renderPlot({
-        plot(table(MasterList$Cert))
-    },height = 400,width = 500)  
+        t <- table(MasterList$Cert)
+        t <- t[t > 10]
+        ggplot(as.data.frame(t)) + aes(x = Var1,y = Freq) + 
+            geom_bar(stat="identity",fill = "purple") +
+            scale_x_discrete(name ="Certificate")
+    },height = 400,width = 600)  
     
     output$KeywordGraph <- renderPlot({
-        plot(table(MasterList$Keyword))
+        myTable <- table(unlist(strsplit(MasterList$Keyword," ")))
+        myTable <- sort(myTable,decreasing = TRUE)
+        myTable <- myTable[1:10]
+        ggplot(as.data.frame(myTable)) + aes(x = Var1,y = Freq) + 
+            geom_bar(stat="identity",fill = "pink") +
+            scale_x_discrete(name ="Keywords")
+        
     },height = 400,width = 500)  
     
     output$YearDT <- renderDT({
