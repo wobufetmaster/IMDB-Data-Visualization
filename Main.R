@@ -214,48 +214,81 @@ server <- function(input,output,session) {
         
     })
     
+    OurTable<- reactive({
+        NewMaster<-getTable(input$Decade,input$Year,input$Genre,input$Keywords)
+        NewMaster
+    })
     
     
     output$YearGraph <- renderPlot({
-        ggplot(as.data.frame(table(year(MasterList$Date)))) + aes(x = Var1,y = Freq) + 
+        if(nrow(OurTable())==0){
+            NoData = paste("\n  There is no Data ")
+            ggplot() + annotate("text", x = 4, y = 25, size=8, label = NoData) + theme_bw() + theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+        }else{
+        ggplot(as.data.frame(table(year(OurTable()$Date)))) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "blue2") +
             scale_x_discrete(name ="Year", limits=seq(from = 1930, to = 2018, by = 5))
+        }
             },height = 400,width = 500)
+    
     output$MonthGraph <- renderPlot({
-        ggplot(as.data.frame(table(month(MasterList$Date)))) + aes(x = Var1,y = Freq) + 
+        if(nrow(OurTable())==0){
+        NoData = paste("\n  There is no Data ")
+        ggplot() + annotate("text", x = 4, y = 25, size=8, label = NoData) + theme_bw() + theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+    }else{
+        ggplot(as.data.frame(table(month(OurTable()$Date)))) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "red2") +
             scale_x_discrete(name ="Month", limits=1:12)
+    }
     },height = 400,width = 500)
     
     output$RunningGraph <- renderPlot({
-        ggplot(as.data.frame(table(MasterList$duration))) + aes(x = Var1,y = Freq) + 
+        if(nrow(OurTable())==0){
+            NoData = paste("\n  There is no Data ")
+            ggplot() + annotate("text", x = 4, y = 25, size=8, label = NoData) + theme_bw() + theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+        }else{
+        ggplot(as.data.frame(table(OurTable()$duration))) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "green") +
             scale_x_discrete(name ="Running Time",limits = seq(from = 60, to = 180, by = 5))
+        }
     },height = 400,width = 500)  
     
     output$GenreGraph <- renderPlot({
-        ggplot(as.data.frame(table(unlist(strsplit(MasterList$Genres," "))))) + aes(x = Var1,y = Freq) + 
+        if(nrow(OurTable())==0){
+            NoData = paste("\n  There is no Data ")
+            ggplot() + annotate("text", x = 4, y = 25, size=8, label = NoData) + theme_bw() + theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+        }else{
+        ggplot(as.data.frame(table(unlist(strsplit(OurTable()$Genres," "))))) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "blue") +
             scale_x_discrete(name ="Genre")
-        
+        }
     },height = 400,width = 500)  
     
     output$CertificateGraph <- renderPlot({
-        t <- table(MasterList$Cert)
+        if(nrow(OurTable())==0){
+            NoData = paste("\n  There is no Data ")
+            ggplot() + annotate("text", x = 4, y = 25, size=8, label = NoData) + theme_bw() + theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+        }else{
+        t <- table(OurTable()$Cert)
         t <- t[t > 10]
         ggplot(as.data.frame(t)) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "purple") +
             scale_x_discrete(name ="Certificate")
+        }
     },height = 400,width = 600)  
     
     output$KeywordGraph <- renderPlot({
-        myTable <- table(unlist(strsplit(MasterList$Keyword," ")))
+        if(nrow(OurTable())==0){
+            NoData = paste("\n  There is no Data ")
+            ggplot() + annotate("text", x = 4, y = 25, size=8, label = NoData) + theme_bw() + theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+        }else{
+        myTable <- table(unlist(strsplit(OurTable()$Keyword," ")))
         myTable <- sort(myTable,decreasing = TRUE)
         myTable <- myTable[1:10]
         ggplot(as.data.frame(myTable)) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "pink") +
             scale_x_discrete(name ="Keywords")
-        
+        }
     },height = 400,width = 500)  
     
     output$YearDT <- renderDT({
