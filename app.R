@@ -137,26 +137,26 @@ body <- dashboardBody(tabItems(
                         title = "Movies released by year",
                         side= "right",
                         tabPanel("Graphical", plotOutput("YearGraph")),
-                        tabPanel("Tabular", p("Tabular"))
+                        tabPanel("Tabular", p("Tabular"),tableOutput("K1"))
                  ),
                  tabBox(width = 6,height = 450, id = "tabset2",
                         title = "Movies released by month",
                         side= "right",
                         tabPanel("Graphical", plotOutput("MonthGraph")),
-                        tabPanel("Tabular", p("Tabular"))
+                        tabPanel("Tabular", p("Tabular"),tableOutput("K2"))
                  )
              ), fluidRow(
                  tabBox(width = 6,height = 450, id = "tabset3",
                         title = "Distribution of running times",
                         side= "right",
                         tabPanel("Graphical", plotOutput("RunningGraph")),
-                        tabPanel("Tabular", p("Tabular"))
+                        tabPanel("Tabular", p("Tabular"),tableOutput("K3"))
                  ),
                  tabBox(width = 6,height = 450, id = "tabset4",
                         title = "distribution of certificates",
                         side= "right",
                         tabPanel("Graphical", plotOutput("CertificateGraph")),
-                        tabPanel("Tabular", p("Tabular"))
+                        tabPanel("Tabular", p("Tabular"),tableOutput("K4"))
                  ),
              ),
              fluidRow(
@@ -164,13 +164,13 @@ body <- dashboardBody(tabItems(
                         title = "distribution of genres",
                         side= "right",
                         tabPanel("Graphical", plotOutput("GenreGraph")),
-                        tabPanel("Tabular", p("Tabular"))
+                        tabPanel("Tabular", p("Tabular"),tableOutput("K5"))
                  ),
-                 tabBox(width = 6,height = 450, id = "tabset5",
+                 tabBox(width = 6,height = 450, id = "tabset6",
                         title = "top n keywords",
                         side= "right",
                         tabPanel("Graphical", plotOutput("KeywordGraph")),
-                        tabPanel("Tabular", p("Tabular"))
+                        tabPanel("Tabular",p("Tabular"),  tableOutput("K6"))
                  )
              )),
     tabItem(tabName = "about",
@@ -301,6 +301,31 @@ server <- function(input,output,session) {
     
     output$YearDT <- renderDT({
         
+        
+    })
+    
+    output$K1 <- renderTable({
+        head(year(OurTable()$Date),10)
+    })
+    
+    output$K2 <- renderTable({
+        head(month(OurTable()$Date),10)
+    })
+    
+    output$K3 <- renderTable({
+        head(OurTable()$duration,10)
+    })
+    
+    output$K4 <- renderTable({
+        head(OurTable()$Genre,10)
+    })
+    
+    output$K5 <- renderTable({
+        head(OurTable()$Cert,10)
+    })
+    
+    output$K6 <- renderTable({
+        head(OurTable()$Keyword,10)
         
     })
 }
