@@ -260,7 +260,8 @@ server <- function(input,output,session) {
         }else{
         ggplot(as.data.frame(table(unlist(strsplit(OurTable()$Genres," "))))) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "blue") +
-            scale_x_discrete(name ="Genre")
+            scale_x_discrete(name ="Genre")+
+                theme(axis.text.x = element_text(face = "bold", color = "black", size = 12, angle = 90))
         }
     },height = 400,width = 500)  
     
@@ -293,7 +294,8 @@ server <- function(input,output,session) {
         myTable <- myTable[1:10]
         ggplot(as.data.frame(myTable)) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "pink") +
-            scale_x_discrete(name ="Keywords")
+            scale_x_discrete(name ="Keywords") +
+            theme(axis.text.x = element_text(face = "bold", color = "black", size = 10, angle = 75))
         }
     },height = 400,width = 500)  
     
