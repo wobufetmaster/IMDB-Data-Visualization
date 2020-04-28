@@ -271,7 +271,8 @@ server <- function(input,output,session) {
         }else{
         t <- table(OurTable()$Cert)
         t <- t[t > 10]
-            if(nrow(t)<1){
+        
+            if(is.null(nrow(t))){
                 NoData = paste("\n  Not Enough Data ")
                 ggplot() + annotate("text", x = 4, y = 25, size=8, label = NoData) + theme_bw() + theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
             }else{
