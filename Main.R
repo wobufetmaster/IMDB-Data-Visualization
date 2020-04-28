@@ -271,9 +271,14 @@ server <- function(input,output,session) {
         }else{
         t <- table(OurTable()$Cert)
         t <- t[t > 10]
+            if(nrow(t)<1){
+                NoData = paste("\n  Not Enough Data ")
+                ggplot() + annotate("text", x = 4, y = 25, size=8, label = NoData) + theme_bw() + theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+            }else{
         ggplot(as.data.frame(t)) + aes(x = Var1,y = Freq) + 
             geom_bar(stat="identity",fill = "purple") +
             scale_x_discrete(name ="Certificate")
+        }
         }
     },height = 400,width = 600)  
     
